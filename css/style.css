@@ -1,0 +1,165 @@
+/* style.css - Premium glassmorphism, gradients, animations, and responsive layout for all pages */
+:root {
+  --glass-bg: rgba(34, 40, 49, 0.6);
+  --glass-blur: blur(16px);
+  --neon-blue: #5ee7df;
+  --neon-purple: #b490ca;
+  --neon-pink: #ff6ec4;
+  --neon-accent: #00f2fe;
+}
+body {
+  background: linear-gradient(135deg, #232b4d 0%, #3a2d5c 50%, #1a1a2e 100%);
+  min-height: 100vh;
+  color: #fff;
+  transition: background 0.5s, color 0.5s;
+}
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  border-radius: 1.5rem;
+  border: 2px solid rgba(255,255,255,0.15);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+.glow {
+  box-shadow: 0 0 8px 2px var(--neon-blue), 0 0 24px 4px var(--neon-purple);
+}
+.animated-underline {
+  position: relative;
+}
+.animated-underline::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: -4px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink), var(--neon-accent));
+  border-radius: 2px;
+  transform: scaleX(0);
+  transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+}
+.animated-underline:hover::after, .animated-underline.active::after {
+  transform: scaleX(1);
+}
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  border-radius: 1.25rem;
+  padding: 1rem;
+  transition: transform 0.3s, box-shadow 0.3s;
+  border: 1.5px solid rgba(255,255,255,0.18);
+  box-shadow: 0 4px 24px 0 rgba(94,231,223,0.15), 0 1.5px 8px 0 var(--neon-purple);
+}
+.glass-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 32px 0 var(--neon-blue), 0 2px 16px 0 var(--neon-pink);
+}
+.gradient-badge {
+  background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink));
+  color: #fff;
+  border-radius: 9999px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  box-shadow: 0 0 8px 2px var(--neon-pink);
+}
+.btn-glass {
+  padding: 0.5rem 1.25rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink));
+  color: #fff;
+  box-shadow: 0 0 8px 2px var(--neon-accent);
+  border: none;
+}
+.btn-glass::before {
+  content: '';
+  position: absolute;
+  left: -50%;
+  top: 0;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(120deg, var(--neon-blue), var(--neon-pink), var(--neon-accent));
+  opacity: 0.2;
+  transition: opacity 0.3s;
+  z-index: 0;
+}
+.btn-glass:hover::before {
+  opacity: 0.5;
+}
+.btn-glass:active {
+  transform: scale(0.97);
+}
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  padding: 0.5rem;
+  transition: all 0.2s;
+  background: rgba(255,255,255,0.08);
+  box-shadow: 0 0 8px 2px var(--neon-blue);
+}
+.icon-btn:hover {
+  background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink));
+  color: #fff;
+  box-shadow: 0 0 16px 4px var(--neon-accent);
+}
+input, textarea {
+  color: #222;
+  background: rgba(255,255,255,0.15);
+  border: 1.5px solid rgba(255,255,255,0.18);
+  box-shadow: 0 2px 8px 0 rgba(94,231,223,0.10);
+  transition: box-shadow 0.3s, border-color 0.3s, background 0.3s;
+}
+input::placeholder, textarea::placeholder {
+  color: #666;
+  opacity: 1;
+}
+input:focus, textarea:focus {
+  outline: none;
+  border-color: var(--neon-pink);
+  box-shadow: 0 0 0 2px var(--neon-pink), 0 2px 8px 0 var(--neon-blue);
+  background: rgba(255,255,255,0.25);
+}
+/* Animate fade/slide in for cards and sections */
+.animate-fadeInUp {
+  opacity: 0;
+  transform: translateY(40px);
+  animation: fadeInUp 0.7s cubic-bezier(.4,0,.2,1) forwards;
+}
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.7s, transform 0.7s;
+}
+.scroll-reveal.visible {
+  opacity: 1;
+  transform: none;
+}
+body.light {
+  background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 50%, #f1f5f9 100%);
+  color: #232b4d;
+}
+body.light .glass {
+  background: rgba(255,255,255,0.7);
+  border: 2px solid rgba(0,0,0,0.08);
+}
+body.light .glass-card {
+  box-shadow: 0 4px 24px 0 rgba(94,231,223,0.08), 0 1.5px 8px 0 var(--neon-blue);
+}
+body.light .glow {
+  box-shadow: 0 0 8px 2px var(--neon-accent), 0 0 24px 4px var(--neon-blue);
+}
+@media (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
+}
