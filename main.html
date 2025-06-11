@@ -18,7 +18,7 @@
     body {
       font-family: 'Poppins', sans-serif;
       height: 100vh;
-      background: linear-gradient(135deg, #2E073F, #7A1CAC);
+      background: linear-gradient(135deg, #0b1924, #07064c);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -26,22 +26,23 @@
     }
 
     .login-container {
-      background: rgba(235, 211, 248, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(170,169,255,0.08);
+      border: 1px solid rgba(170,169,255,0.18);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       padding: 40px;
       width: 350px;
       border-radius: 20px;
-      box-shadow: 0 0 20px rgba(173, 73, 225, 0.2);
-      color: #EBD3F8;
+      box-shadow: 0 0 20px rgba(80,79,175,0.18);
+      color: #aaa9ff;
       animation: fadeIn 0.8s ease-out;
     }
 
     .login-container h2 {
       text-align: center;
       margin-bottom: 30px;
-      color: #AD49E1;
+      color: #504faf;
+      text-shadow: 0 0 8px #aaa9ff44;
     }
 
     .form-group {
@@ -53,46 +54,58 @@
     .form-group label {
       margin-bottom: 5px;
       font-size: 14px;
+      color: #aaa9ff;
     }
 
     .form-group input {
       padding: 10px 15px;
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      border: 1px solid #aaa9ff44;
       border-radius: 8px;
-      background: rgba(255, 255, 255, 0.1);
-      color: #EBD3F8;
+      background: rgba(170,169,255,0.06);
+      color: #fff;
       font-size: 15px;
       outline: none;
       transition: all 0.3s ease;
+      box-shadow: 0 0 0 0 #504faf;
     }
 
     .form-group input:focus {
-      border-color: #AD49E1;
-      box-shadow: 0 0 6px #AD49E1;
+      border-color: #504faf;
+      box-shadow: 0 0 6px #aaa9ff;
     }
 
     .login-btn {
       width: 100%;
       padding: 12px;
-      background: linear-gradient(135deg, #7A1CAC, #AD49E1);
+      background: linear-gradient(135deg, #504faf, #aaa9ff);
       color: #fff;
       border: none;
       border-radius: 8px;
       font-size: 16px;
       cursor: pointer;
       transition: all 0.3s ease-in-out;
+      box-shadow: 0 0 12px #504faf55;
     }
 
     .login-btn:hover {
       transform: scale(1.05);
-      box-shadow: 0 0 10px #AD49E1;
+      box-shadow: 0 0 16px #aaa9ff, 0 0 8px #504faf;
+      background: linear-gradient(135deg, #aaa9ff, #504faf);
+      color: #07064c;
     }
 
     .footer-text {
       text-align: center;
       margin-top: 20px;
       font-size: 13px;
-      color: #aaa;
+      color: #6a6a81;
+    }
+
+    .error-msg {
+      color: #ff6b6b;
+      text-align: center;
+      margin-bottom: 10px;
+      display: none;
     }
 
     @keyframes fadeIn {
