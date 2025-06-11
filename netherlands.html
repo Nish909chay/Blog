@@ -1,0 +1,108 @@
+<!-- netherlands.html - Netherlands niche page for QA Blogging Platform -->
+<!-- ...copy structure from finance.html, update tab and section IDs, and ensure all links/scripts/styles are correct... -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Netherlands Blogs - QABlog</title>
+  <link href="css/style.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/2c36e9b7b1.js" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+</head>
+<body class="transition-colors duration-500">
+  <!-- Navbar -->
+  <nav class="fixed top-0 left-0 w-full z-50 glass flex items-center justify-between px-8 py-4">
+    <div class="flex items-center gap-3">
+      <a href="index.html" class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-[#7A1CAC] via-[#AD49E1] to-[#EBD3F8] bg-clip-text text-transparent">QABlog</a>
+    </div>
+    <ul class="flex gap-8 text-lg font-semibold">
+      <li><a href="travel.html" class="animated-underline nav-tab" data-tab="travel">Traveling</a></li>
+      <li><a href="finance.html" class="animated-underline nav-tab" data-tab="finance">Finance & Investments</a></li>
+      <li><a href="netherlands.html" class="animated-underline nav-tab active" data-tab="netherlands">Netherlands & Life There</a></li>
+      <li><a href="current-affairs.html" class="animated-underline nav-tab" data-tab="current-affairs">Current Affairs</a></li>
+      <li><a href="about.html" class="animated-underline nav-tab" data-tab="about">About</a></li>
+    </ul>
+    <button id="theme-toggle" class="icon-btn ml-4" title="Toggle light/dark mode">
+      <i class="fas fa-moon"></i>
+    </button>
+    <a href="admin-login.html" id="admin-login-link" class="ml-4 text-xs text-[#AD49E1] hover:underline" style="display:none;">Admin Login</a>
+  </nav>
+  <script>
+    // Show Admin Login link only if not admin
+    if (localStorage.getItem('isAdmin') !== 'true') {
+      document.getElementById('admin-login-link').style.display = 'inline-block';
+    }
+  </script>
+  <!-- Main Content -->
+  <main class="pt-28 pb-12 px-2 md:px-0 flex justify-center min-h-screen">
+    <div class="glass max-w-7xl w-full grid grid-cols-1 md:grid-cols-4 gap-8 p-6 md:p-10 mt-2 shadow-xl">
+      <!-- Sidebar -->
+      <aside class="sidebar col-span-1 hidden md:block">
+        <div class="glass-card mb-6">
+          <input type="text" placeholder="Search..." class="w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#AD49E1] transition-all text-[#EBD3F8] placeholder-[#AD49E1] bg-transparent border border-[#AD49E1]/30" />
+        </div>
+        <div class="glass-card mb-6">
+          <h3 class="font-bold mb-2">Tags</h3>
+          <div class="flex flex-wrap gap-2">
+            <span class="gradient-badge">Netherlands</span>
+            <span class="gradient-badge">Culture</span>
+            <span class="gradient-badge">Housing</span>
+            <span class="gradient-badge">Amsterdam</span>
+            <span class="gradient-badge">QA</span>
+          </div>
+        </div>
+        <div class="glass-card">
+          <h3 class="font-bold mb-2">Latest Questions</h3>
+          <ul class="text-sm space-y-2">
+            <li><a href="#" class="hover:underline">How to find housing in the Netherlands?</a></li>
+            <li><a href="#" class="hover:underline">Best Dutch foods to try?</a></li>
+            <li><a href="#" class="hover:underline">Dutch healthcare tips?</a></li>
+          </ul>
+        </div>
+      </aside>
+      <!-- Main Section -->
+      <section class="col-span-1 md:col-span-3 space-y-10">
+        <div class="tab-section scroll-reveal visible" id="tab-netherlands">
+          <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-[#7A1CAC] via-[#AD49E1] to-[#EBD3F8] bg-clip-text text-transparent">Netherlands & Life There</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="glass-card p-8 flex flex-col justify-between animate-fadeInUp">
+              <h4 class="font-semibold text-2xl mb-2 text-[#AD49E1]">How to find housing in the Netherlands?</h4>
+              <p class="mb-4">Tips and resources for expats and students looking for accommodation in Dutch cities.</p>
+              <a href="#" class="premium-btn mt-4 self-start">Read More</a>
+            </div>
+            <div class="glass-card p-8 flex flex-col justify-between animate-fadeInUp">
+              <h4 class="font-semibold text-2xl mb-2 text-[#AD49E1]">Best Dutch foods to try</h4>
+              <p class="mb-4">A guide to the most delicious and unique foods you must try in the Netherlands.</p>
+              <a href="#" class="premium-btn mt-4 self-start">Read More</a>
+            </div>
+            <div class="glass-card p-8 flex flex-col justify-between animate-fadeInUp">
+              <h4 class="font-semibold text-2xl mb-2 text-[#AD49E1]">Dutch healthcare tips</h4>
+              <p class="mb-4">How to navigate the Dutch healthcare system as an expat or visitor.</p>
+              <a href="#" class="premium-btn mt-4 self-start">Read More</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+  <!-- Footer -->
+  <footer class="glass mt-10 mx-auto max-w-7xl p-6 flex flex-col md:flex-row items-center justify-between gap-4 text-sm shadow-lg">
+    <div class="flex items-center gap-3">
+      <a href="#" class="icon-btn" title="Twitter"><i class="fab fa-twitter"></i></a>
+      <a href="#" class="icon-btn" title="Instagram"><i class="fab fa-instagram"></i></a>
+      <a href="#" class="icon-btn" title="Facebook"><i class="fab fa-facebook"></i></a>
+    </div>
+    <form class="flex items-center gap-2">
+      <input type="email" placeholder="Newsletter Email" class="px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#AD49E1] transition-all text-[#EBD3F8] placeholder-[#AD49E1] bg-transparent border border-[#AD49E1]/30" />
+      <button class="btn-glass" type="submit">Sign Up</button>
+    </form>
+    <div class="text-center w-full md:w-auto">
+      <span class="opacity-80">&copy; <span id="year"></span> QABlog. All rights reserved.</span>
+    </div>
+  </footer>
+  <script src="js/main.js" defer></script>
+</body>
+</html>
