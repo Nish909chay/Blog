@@ -8,14 +8,14 @@ function getPage() {
   if (!path || path === '' || path === 'index.html') return 'travel';
   if (path.includes('travel')) return 'travel';
   if (path.includes('finance')) return 'finance';
-  if (path.includes('investments')) return 'investments';
   if (path.includes('netherlands')) return 'netherlands';
+  if (path.includes('current-affairs')) return 'current-affairs';
   return '';
 }
 
 // Blog Data
 const BLOGS_KEY = 'qa_blogs';
-const NICHES = ['travel', 'finance', 'investments', 'netherlands'];
+const NICHES = ['travel', 'finance', 'netherlands', 'current-affairs'];
 const defaultBlogs = {
   travel: [
     { id: 't1', title: 'Backpacking Europe: Top Tips', author: 'Alice', date: '2025-06-01', tags: ['Travel', 'Europe', 'Budget'], image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque euismod, nisi eu consectetur.' },
@@ -49,15 +49,17 @@ function loadBlogs() {
 function saveBlogs(blogs) {
   localStorage.setItem(BLOGS_KEY, JSON.stringify(blogs));
 }
+// Utility: Check admin
+function isAdmin() {
+  return localStorage.getItem('isAdmin') === 'true';
+}
+
 // Render blogs for current page
 function renderBlogs() {
   const niche = getPage();
-  const blogs = loadBlogs()[niche] || [];
-  const section = document.getElementById('tab-' + niche);
-  if (!section) return;
-  const blogList = document.createElement('div');
-  blogList.className = 'grid md:grid-cols-2 gap-6 mb-8';
-  blogList.innerHTML = blogs.map(blog => `
+  const blogsData = loadBlogs();
+  const isAdminUser = isAdmin();
+  const renderCard = (blog, niche) => `
     <div class="glass-card group relative overflow-hidden blog-card animate-fadeInUp" data-niche="${niche}" data-id="${blog.id}">
       <img src="${blog.image}" alt="${blog.title}" class="rounded-xl w-full h-48 object-cover mb-3 group-hover:scale-105 transition-transform duration-300" />
       <span class="gradient-badge absolute top-4 left-4">${blog.tags[0]}</span>
@@ -69,16 +71,44 @@ function renderBlogs() {
         <button class="icon-btn" title="Comment"><i class="far fa-comment"></i></button>
         <button class="icon-btn" title="Share"><i class="fas fa-share"></i></button>
         <a href="post-detail.html?niche=${niche}&id=${blog.id}" class="btn-glass read-more-btn ml-auto">Read More</a>
+        ${isAdminUser ? `<button class="icon-btn admin-controls edit-blog-btn" title="Edit" data-id="${blog.id}"><i class="fas fa-edit"></i></button><button class="icon-btn admin-controls delete-blog-btn" title="Delete" data-id="${blog.id}"><i class="fas fa-trash"></i></button>` : ''}
       </div>
     </div>
-  `).join('');
-  // Replace old blog list if exists
+  `;
+  const section = document.getElementById('tab-' + niche);
+  if (!section) return;
+  const blogs = blogsData[niche] || [];
+  const blogList = document.createElement('div');
+  blogList.className = 'grid md:grid-cols-2 gap-6 mb-8 blog-list';
+  blogList.innerHTML = blogs.map(blog => renderCard(blog, niche)).join('');
   const oldList = section.querySelector('.blog-list');
   if (oldList) oldList.remove();
   blogList.classList.add('blog-list');
   section.insertBefore(blogList, section.children[1]);
+  // Hide admin controls for guests
+  if (!isAdminUser) {
+    blogList.querySelectorAll('.admin-controls').forEach(el => el.style.display = 'none');
+  }
+  // Add Edit/Delete handlers for admin
+  if (isAdminUser) {
+    blogList.querySelectorAll('.edit-blog-btn').forEach(btn => {
+      btn.onclick = function() {
+        const id = btn.getAttribute('data-id');
+        showEditBlogModal(niche, id);
+      };
+    });
+    blogList.querySelectorAll('.delete-blog-btn').forEach(btn => {
+      btn.onclick = function() {
+        const id = btn.getAttribute('data-id');
+        if (confirm('Are you sure you want to delete this blog?')) {
+          deleteBlogById(niche, id);
+        }
+      };
+    });
+  }
 }
-// Add Blog Modal
+
+// Add Blog Modal (used for all categories)
 function showAddBlogModal(niche) {
   let modal = document.getElementById('add-blog-modal');
   if (modal) modal.remove();
@@ -91,23 +121,23 @@ function showAddBlogModal(niche) {
       <h2 class="text-xl font-bold mb-4">Add Blog</h2>
       <div class="mb-3">
         <label class="block mb-1 font-semibold">Title</label>
-        <input type="text" name="title" class="w-full px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400 text-gray-900 placeholder-gray-500" required />
+        <input type="text" name="title" class="w-full px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#AD49E1] text-gray-900 placeholder-gray-500" required />
       </div>
       <div class="mb-3">
         <label class="block mb-1 font-semibold">Content</label>
-        <textarea name="content" rows="5" class="w-full px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400 text-gray-900 placeholder-gray-500" required></textarea>
+        <textarea name="content" rows="5" class="w-full px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#AD49E1] text-gray-900 placeholder-gray-500" required></textarea>
       </div>
       <div class="mb-3">
         <label class="block mb-1 font-semibold">Author</label>
-        <input type="text" name="author" class="w-full px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400 text-gray-900 placeholder-gray-500" required />
+        <input type="text" name="author" class="w-full px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#AD49E1] text-gray-900 placeholder-gray-500" required />
       </div>
       <div class="mb-3">
         <label class="block mb-1 font-semibold">Image URL (optional)</label>
-        <input type="url" name="image" class="w-full px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400 text-gray-900 placeholder-gray-500" />
+        <input type="url" name="image" class="w-full px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#AD49E1] text-gray-900 placeholder-gray-500" />
       </div>
       <div class="mb-3">
         <label class="block mb-1 font-semibold">Tags (comma separated)</label>
-        <input type="text" name="tags" class="w-full px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400 text-gray-900 placeholder-gray-500" />
+        <input type="text" name="tags" class="w-full px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#AD49E1] text-gray-900 placeholder-gray-500" />
       </div>
       <button type="submit" class="btn-glass w-full mt-2">Add Blog</button>
     </form>
@@ -130,7 +160,6 @@ function showAddBlogModal(niche) {
     const image = fd.get('image').trim() || 'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80';
     const tags = fd.get('tags').split(',').map(t => t.trim()).filter(Boolean);
     const blogs = loadBlogs();
-    const niche = getPage();
     const newBlog = {
       id: niche[0] + Date.now(),
       title, content, author, image, tags: tags.length ? tags : [niche.charAt(0).toUpperCase() + niche.slice(1)],
@@ -142,21 +171,117 @@ function showAddBlogModal(niche) {
     renderBlogs();
   };
 }
-// Add Blog button UI injection
+
+// Edit Blog Modal
+function showEditBlogModal(niche, id) {
+  const blogs = loadBlogs();
+  const blog = (blogs[niche] || []).find(b => b.id === id);
+  if (!blog) return;
+  let modal = document.getElementById('edit-blog-modal');
+  if (modal) modal.remove();
+  modal = document.createElement('div');
+  modal.id = 'edit-blog-modal';
+  modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60';
+  modal.innerHTML = `
+    <form class="glass-card max-w-lg w-full p-6 relative animate-fadeInUp edit-blog-form">
+      <button type="button" class="icon-btn absolute top-4 right-4 close-modal" title="Close"><i class="fas fa-times"></i></button>
+      <h2 class="text-xl font-bold mb-4">Edit Blog</h2>
+      <div class="mb-3">
+        <label class="block mb-1 font-semibold">Title</label>
+        <input type="text" name="title" class="w-full px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#AD49E1] text-gray-900 placeholder-gray-500" value="${blog.title}" required />
+      </div>
+      <div class="mb-3">
+        <label class="block mb-1 font-semibold">Content</label>
+        <textarea name="content" rows="5" class="w-full px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#AD49E1] text-gray-900 placeholder-gray-500" required>${blog.content}</textarea>
+      </div>
+      <div class="mb-3">
+        <label class="block mb-1 font-semibold">Author</label>
+        <input type="text" name="author" class="w-full px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#AD49E1] text-gray-900 placeholder-gray-500" value="${blog.author}" required />
+      </div>
+      <div class="mb-3">
+        <label class="block mb-1 font-semibold">Image URL (optional)</label>
+        <input type="url" name="image" class="w-full px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#AD49E1] text-gray-900 placeholder-gray-500" value="${blog.image}" />
+      </div>
+      <div class="mb-3">
+        <label class="block mb-1 font-semibold">Tags (comma separated)</label>
+        <input type="text" name="tags" class="w-full px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#AD49E1] text-gray-900 placeholder-gray-500" value="${blog.tags.join(', ')}" />
+      </div>
+      <button type="submit" class="btn-glass w-full mt-2">Save Changes</button>
+    </form>
+  `;
+  document.body.appendChild(modal);
+  setTimeout(() => modal.classList.add('visible'), 10);
+  modal.querySelector('.close-modal').onclick = () => modal.remove();
+  modal.onclick = e => { if (e.target === modal) modal.remove(); };
+  // Form submit
+  modal.querySelector('.edit-blog-form').onsubmit = function (e) {
+    e.preventDefault();
+    const fd = new FormData(this);
+    blog.title = fd.get('title').trim();
+    blog.content = fd.get('content').trim();
+    blog.author = fd.get('author').trim();
+    blog.image = fd.get('image').trim() || blog.image;
+    blog.tags = fd.get('tags').split(',').map(t => t.trim()).filter(Boolean);
+    saveBlogs(blogs);
+    modal.remove();
+    renderBlogs();
+  };
+}
+
+// Delete Blog by ID
+function deleteBlogById(niche, id) {
+  const blogs = loadBlogs();
+  blogs[niche] = (blogs[niche] || []).filter(b => b.id !== id);
+  saveBlogs(blogs);
+  renderBlogs();
+}
+
+// Add Blog button UI injection (admin only)
 function injectAddBlogBtn() {
   const niche = getPage();
   const section = document.getElementById('tab-' + niche);
   if (section) {
     let addBtn = section.querySelector('.add-blog-btn');
-    if (!addBtn) {
-      addBtn = document.createElement('button');
-      addBtn.className = 'btn-glass add-blog-btn mb-6';
-      addBtn.textContent = 'Add Blog';
-      addBtn.onclick = () => showAddBlogModal(niche);
-      section.insertBefore(addBtn, section.firstChild.nextSibling);
+    if (isAdmin()) {
+      if (!addBtn) {
+        addBtn = document.createElement('button');
+        addBtn.className = 'btn-glass add-blog-btn mb-6';
+        addBtn.textContent = 'Add Blog';
+        addBtn.id = 'add-blog-btn';
+        addBtn.onclick = () => showAddBlogModal(niche);
+        section.insertBefore(addBtn, section.firstChild.nextSibling);
+      } else {
+        addBtn.style.display = '';
+      }
+    } else if (addBtn) {
+      addBtn.style.display = 'none';
     }
   }
 }
+
+// Admin logout button injection
+function injectAdminLogoutBtn() {
+  const nav = document.querySelector('nav');
+  if (!nav) return;
+  let logoutBtn = nav.querySelector('.admin-logout-btn');
+  if (isAdmin()) {
+    if (!logoutBtn) {
+      logoutBtn = document.createElement('button');
+      logoutBtn.className = 'btn-glass admin-logout-btn ml-4';
+      logoutBtn.textContent = 'Logout';
+      logoutBtn.onclick = function() {
+        localStorage.removeItem('isAdmin');
+        location.reload();
+      };
+      nav.appendChild(logoutBtn);
+    } else {
+      logoutBtn.style.display = '';
+    }
+  } else if (logoutBtn) {
+    logoutBtn.style.display = 'none';
+  }
+}
+
 // Blog detail page rendering
 function renderBlogDetail() {
   if (!window.location.pathname.includes('post-detail.html')) return;
@@ -184,12 +309,14 @@ function renderBlogDetail() {
     </div>
   `;
 }
+
 // On DOMContentLoaded, render blogs and add blog button
 window.addEventListener('DOMContentLoaded', () => {
   if (document.querySelector('main')) {
     renderBlogs();
     injectAddBlogBtn();
   }
+  injectAdminLogoutBtn();
   renderBlogDetail();
   // Theme toggle
   const themeBtn = document.getElementById('theme-toggle');
@@ -224,18 +351,18 @@ window.addEventListener('DOMContentLoaded', () => {
   if (window.gsap) {
     gsap.utils.toArray('.glass-card').forEach(card => {
       card.addEventListener('mouseenter', () => {
-        gsap.to(card, { scale: 1.07, boxShadow: '0 8px 32px 0 #5ee7df, 0 2px 16px 0 #ff6ec4', duration: 0.3 });
+        gsap.to(card, { scale: 1.07, boxShadow: '0 0 16px 2px rgba(235,235,245,0.18)', duration: 0.3 });
       });
       card.addEventListener('mouseleave', () => {
-        gsap.to(card, { scale: 1, boxShadow: '0 4px 24px 0 rgba(94,231,223,0.15), 0 1.5px 8px 0 #b490ca', duration: 0.3 });
+        gsap.to(card, { scale: 1, boxShadow: '0 2px 8px 0 rgba(235,235,245,0.10)', duration: 0.3 });
       });
     });
     gsap.utils.toArray('.btn-glass').forEach(btn => {
       btn.addEventListener('mouseenter', () => {
-        gsap.to(btn, { scale: 1.08, boxShadow: '0 0 24px 6px #00f2fe', duration: 0.2 });
+        gsap.to(btn, { scale: 1.08, boxShadow: '0 0 16px 2px rgba(235,235,245,0.18)', duration: 0.2 });
       });
       btn.addEventListener('mouseleave', () => {
-        gsap.to(btn, { scale: 1, boxShadow: '0 0 8px 2px #00f2fe', duration: 0.2 });
+        gsap.to(btn, { scale: 1, boxShadow: '0 2px 8px 0 rgba(235,235,245,0.10)', duration: 0.2 });
       });
     });
   }

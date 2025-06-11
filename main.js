@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function () {
 // --- Blog Data & Routing ---
 // Sample blog data for each niche (can be extended or loaded from localStorage)
 const BLOGS_KEY = 'qa_blogs';
-const NICHES = ['travel', 'finance', 'investments', 'netherlands'];
+const NICHES = ['travel', 'finance', 'netherlands', 'current-affairs'];
 
 const defaultBlogs = {
   travel: [
@@ -359,19 +359,76 @@ NICHES.forEach(niche => {
 });
 
 // Render blogs on load for all tabs
-NICHES.forEach(renderBlogs);
+NICHES.forEach(niche => {
+  if (niche === 'finance') {
+    renderBlogs('finance');
+    // Render investments section in finance.html
+    const investmentsSection = document.getElementById('tab-investments');
+    if (investmentsSection) {
+      const blogs = loadBlogs()['investments'] || [];
+      const blogList = document.createElement('div');
+      blogList.className = 'grid md:grid-cols-2 gap-6 mb-8 blog-list';
+      blogList.innerHTML = blogs.map(blog => `
+        <div class="glass-card group relative overflow-hidden blog-card" data-niche="investments" data-id="${blog.id}">
+          <img src="${blog.image}" alt="${blog.title}" class="rounded-xl w-full h-48 object-cover mb-3 group-hover:scale-105 transition-transform duration-300" />
+          <span class="gradient-badge absolute top-4 left-4">${blog.tags[0]}</span>
+          <h3 class="font-bold text-xl mb-2">${blog.title}</h3>
+          <p class="mb-1 text-sm opacity-80">By ${blog.author} &middot; ${blog.date}</p>
+          <p class="mb-3">${blog.content.slice(0, 80)}...</p>
+          <div class="flex gap-4">
+            <button class="icon-btn" title="Like"><i class="far fa-heart"></i></button>
+            <button class="icon-btn" title="Comment"><i class="far fa-comment"></i></button>
+            <button class="icon-btn" title="Share"><i class="fas fa-share"></i></button>
+            <button class="btn-glass read-more-btn ml-auto" data-niche="investments" data-id="${blog.id}">Read More</button>
+          </div>
+        </div>
+      `).join('');
+      const oldList = investmentsSection.querySelector('.blog-list');
+      if (oldList) oldList.remove();
+      investmentsSection.insertBefore(blogList, investmentsSection.children[1]);
+    }
+  } else {
+    renderBlogs(niche);
+  }
+});
 
 // Add Blog button UI injection
 NICHES.forEach(niche => {
-  const section = document.getElementById('tab-' + niche);
-  if (section) {
-    let addBtn = section.querySelector('.add-blog-btn');
-    if (!addBtn) {
-      addBtn = document.createElement('button');
-      addBtn.className = 'btn-glass add-blog-btn mb-6';
-      addBtn.textContent = 'Add Blog';
-      addBtn.dataset.niche = niche;
-      section.insertBefore(addBtn, section.firstChild.nextSibling);
+  if (niche === 'finance') {
+    const section = document.getElementById('tab-finance');
+    if (section) {
+      let addBtn = section.querySelector('.add-blog-btn');
+      if (!addBtn) {
+        addBtn = document.createElement('button');
+        addBtn.className = 'btn-glass add-blog-btn mb-6';
+        addBtn.textContent = 'Add Blog';
+        addBtn.dataset.niche = 'finance';
+        section.insertBefore(addBtn, section.firstChild.nextSibling);
+      }
+    }
+    // Add Blog button for investments section in finance.html
+    const investmentsSection = document.getElementById('tab-investments');
+    if (investmentsSection) {
+      let addBtn = investmentsSection.querySelector('.add-blog-btn');
+      if (!addBtn) {
+        addBtn = document.createElement('button');
+        addBtn.className = 'btn-glass add-blog-btn mb-6';
+        addBtn.textContent = 'Add Blog';
+        addBtn.dataset.niche = 'investments';
+        investmentsSection.insertBefore(addBtn, investmentsSection.firstChild.nextSibling);
+      }
+    }
+  } else {
+    const section = document.getElementById('tab-' + niche);
+    if (section) {
+      let addBtn = section.querySelector('.add-blog-btn');
+      if (!addBtn) {
+        addBtn = document.createElement('button');
+        addBtn.className = 'btn-glass add-blog-btn mb-6';
+        addBtn.textContent = 'Add Blog';
+        addBtn.dataset.niche = niche;
+        section.insertBefore(addBtn, section.firstChild.nextSibling);
+      }
     }
   }
 });
